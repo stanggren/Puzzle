@@ -3,11 +3,11 @@
     <h1>Puzzle</h1>
     <div class="input">
       <p>Choose amount of columns:</p>
-      <input v-model="columns" type="number" value="4" min="3" max="5" />
+      <input v-model="columns" type="number" value="4" min="3" max="5" onKeyDown="return false"/>
     </div>
     <div class="input">
       <p>Choose amount of rows:</p>
-      <input v-model="rows" type="number" value="4" min="3" max="5" />
+      <input v-model="rows" type="number" value="4" min="3" max="5" onKeyDown="return false"/>
     </div>
     <div class="input">
       <p id="amountTiles">Amount of tiles: {{tiles}}</p>

@@ -36,6 +36,42 @@ export default {
     }
   },
   methods: {
+    checkTileConnection: function(clickedTile, EmptyTile) {
+      var checkClickedTileIndex;
+      var checkEmptyTileIndex;
+
+      var n = this.$store.state.menu.rows,
+        len = this.$store.state.puzzle.tilesArray.length,
+        out = [],
+        i = 0,
+        size;
+
+      if (len % n === 0) {
+        size = Math.floor(len / n);
+        while (i < len) {
+          out.push(this.$store.state.puzzle.tilesArray.slice(i, (i += size)));
+        }
+      }
+
+      for (var j = 0; j < out.length; j++) {
+        var arr = out[j];
+        const cTile = element => element == clickedTile;
+        const cTileIndex = arr.findIndex(cTile);
+        const eTile = element => element == EmptyTile;
+        const eTileIndex = arr.findIndex(eTile);
+
+        if (cTileIndex == out[j].length - 1) {
+          checkClickedTileIndex = true;
+        }
+        if (eTileIndex == 0) {
+          checkEmptyTileIndex = true;
+        }
+      }
+
+      if (checkClickedTileIndex == true && checkEmptyTileIndex == true) {
+        return true;
+      }
+    },
     getPosition: async function(tile) {
       const clickedTile = element => element == tile.target.textContent;
       const ct = this.$store.state.puzzle.tilesArray.findIndex(clickedTile);
@@ -49,6 +85,9 @@ export default {
         t = tile.target;
       }
 
+      var rightCheck = this.checkTileConnection(tile.target.textContent, "EMP");
+      var leftCheck = this.checkTileConnection("EMP", tile.target.textContent);
+
       if (
         this.$store.state.puzzle.tilesArray[
           Number(ct) + Number(this.$store.state.menu.columns)
@@ -57,7 +96,10 @@ export default {
         t.className = "up";
         await this.sleep(400);
         this.changePosition(ct, et, t);
-      } else if (this.$store.state.puzzle.tilesArray[Number(ct) + 1] == "EMP") {
+      } else if (
+        this.$store.state.puzzle.tilesArray[Number(ct) + 1] == "EMP" &&
+        !rightCheck
+      ) {
         t.className = "right";
         await this.sleep(400);
         this.changePosition(ct, et, t);
@@ -69,7 +111,10 @@ export default {
         t.className = "down";
         await this.sleep(400);
         this.changePosition(ct, et, t);
-      } else if (this.$store.state.puzzle.tilesArray[Number(ct) - 1] == "EMP") {
+      } else if (
+        this.$store.state.puzzle.tilesArray[Number(ct) - 1] == "EMP" &&
+        !leftCheck
+      ) {
         t.className = "left";
         await this.sleep(400);
         this.changePosition(ct, et, t);
@@ -146,25 +191,20 @@ export default {
 <style scoped>
 @media (max-width: 350px) {
   ul {
-    border: 0px!important;
+    border: 0px !important;
   }
-  ul p{
-    margin-left:2px;
+  ul p {
+    margin-left: 2px;
   }
 
   .left {
-
-
-  animation: leftAnimPhone 0.45s!important;
+    animation: leftAnimPhone 0.45s !important;
+  }
+  .right {
+    animation: rightAnimPhone 0.45s !important;
+  }
 }
-.right {
-
-
-  animation: rightAnimPhone 0.45s!important;
-}
-
-}
-  @keyframes rightAnimPhone {
+@keyframes rightAnimPhone {
   from {
     transform: translate(0px);
   }
@@ -173,7 +213,7 @@ export default {
   }
 }
 
-  @keyframes leftAnimPhone {
+@keyframes leftAnimPhone {
   from {
     transform: translate(0px);
   }
@@ -200,6 +240,13 @@ ul {
   background-color: #ffcb4d;
   border: 2px solid #ffcb4d;
   border-radius: 10px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 li p {
@@ -212,6 +259,13 @@ li p {
   opacity: 1;
   cursor: pointer;
   font-weight: 600;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 li:hover {
@@ -223,6 +277,7 @@ li:hover {
   background-color: #fbfbfb;
   color: #fbfbfb;
   border-color: #fbfbfb;
+  pointer-events: none;
 }
 
 #EMP:hover p {
@@ -299,6 +354,7 @@ button:hover {
 }
 
 .left {
+  pointer-events: none;
   list-style: none;
   background-color: #ffcb4d;
   border: 2px solid #ffcb4d;
@@ -307,6 +363,7 @@ button:hover {
   animation: leftAnim 0.45s;
 }
 .right {
+  pointer-events: none;
   list-style: none;
   background-color: #ffcb4d;
   border: 2px solid #ffcb4d;
@@ -315,6 +372,7 @@ button:hover {
   animation: rightAnim 0.45s;
 }
 .up {
+  pointer-events: none;
   list-style: none;
   background-color: #ffcb4d;
   border: 2px solid #ffcb4d;
@@ -323,6 +381,7 @@ button:hover {
   animation: upAnim 0.45s;
 }
 .down {
+  pointer-events: none;
   list-style: none;
   background-color: #ffcb4d;
   border: 2px solid #ffcb4d;
