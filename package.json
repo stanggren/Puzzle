@@ -2,7 +2,7 @@
   "name": "puzzle",
   "version": "0.1.0",
   "private": true,
-  "homepage":"https://stanggren.github.io/Puzzle",
+  "homepage":"https://stanggren.github.io/puzzle",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
